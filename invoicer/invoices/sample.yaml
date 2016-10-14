@@ -1,0 +1,12 @@
+client: sample
+tax: 0.724
+lines:
+  - quantity: 1
+    description: Partridge in a Pear Tree
+    price_each: 20
+  - quantity: 4
+    description: Calling Birds
+    price_each: 10
+  - quantity: 10
+    description: Lords a Leaping
+    price_each: 75

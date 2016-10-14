@@ -1,0 +1,14 @@
+principle:
+  name: Harry Potter
+  email: harry@potter.com
+billing_contact:
+  name: Albus Dumbledore
+  email: albus@dumbledore.com
+company:
+  name: Aurors In Training, Inc.
+  address: |
+    Number 4 Privet Drive
+    Little Whinging
+    SURREY
+    MU3 G3L
+    England

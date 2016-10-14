@@ -1,0 +1,6 @@
+client: sample
+tax: 0.724
+lines:
+  - quantity: 2
+    description: Turtle Doves
+    price_each: 5
