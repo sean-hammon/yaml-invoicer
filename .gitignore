@@ -11,6 +11,7 @@ Desktop.ini
 .DS_Store
 ._*
 
-#   Python Virtualenv Folder
+#   Python System Folders
 inv-env
+__pycache__
 
