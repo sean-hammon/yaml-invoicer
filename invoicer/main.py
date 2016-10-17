@@ -1,9 +1,12 @@
 import sys
+import pprint
 import datafiles
+
+PP = pprint.PrettyPrinter(indent=4)
 
 def main(include_recurring):
 	invoices = datafiles.read(include_recurring)
-	print(invoices)
+	PP.pprint(invoices)
 
 
 if __name__ == "__main__":
