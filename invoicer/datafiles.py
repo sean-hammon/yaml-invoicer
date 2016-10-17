@@ -1,34 +1,63 @@
-import os
+"""
+Reads YAML files from disk and turns them into YAML objects
+"""
+
 import fnmatch
-import arrow
+import os
 from collections import namedtuple
 
-Location = namedtuple('Location', ['invoices', 'recurring', 'pending'])
-location = Location('invoices', 'recurring', 'pending')
+import arrow
+import ruamel.yaml
 
-current_dir = os.path.abspath(".")
+Location = namedtuple('Location', ['invoices', 'recurring', 'pending'])
+LOCATION = Location('invoices', 'recurring', 'pending')
+
+CURRENT_DIR = os.path.abspath(".")
 
 
 def read(recurring=False):
+    """
+    Read YAML files from disk and parse them into YAML objects
 
+    :param recurring: boolean - include recurring invoices
+    :return list of parsed yaml objects
+    """
 
-	invoice_files = []
+    invoice_files = []
 
-	#   Manually created invoices
-	file_list = os.listdir(os.path.join(current_dir, location.invoices))
-	invoice_files.extend(fnmatch.filter(file_list, "*.yaml"))
+    #   Manually created invoices
+    file_list = os.listdir(os.path.join(CURRENT_DIR, LOCATION.invoices))
+    file_names = fnmatch.filter(file_list, "*.yaml")
+    for file in file_names:
+        invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.invoices, file))
 
-	if recurring:
-		invoice_files.extend(read_recurring())
+    if recurring:
+        invoice_files.extend(read_recurring())
 
-	return invoice_files
+    invoices = []
+    for file in invoice_files:
+        with open(file) as inv_file:
+            inv = ruamel.yaml.load(inv_file.read())
+            invoices.append(inv)
+
+    return invoices
 
 
 def read_recurring():
+    """
+    Get the file names of recurring invoices due this month
 
-	now = arrow.now('local')
+    :return list of file names
+    """
 
-	pattern = '{0}-*.yaml'.format(now.month)
-	file_list = os.listdir(os.path.join(current_dir, location.recurring))
-	return fnmatch.filter(file_list, pattern)
+    now = arrow.now('local')
 
+    pattern = '{0}-*.yaml'.format(now.month)
+    file_list = os.listdir(os.path.join(CURRENT_DIR, LOCATION.recurring))
+    file_names = fnmatch.filter(file_list, pattern)
+
+    invoice_files = []
+    for file in file_names:
+        invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.recurring, file))
+
+    return invoice_files
