@@ -1,0 +1,11 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.insertSpaces": true,
+	"python.pythonPath": "e:/Code/inv/inv-env/scripts/python.exe",
+	"python.autoComplete.extraPaths": [
+		"e:/Code/inv/inv-env/lib/site-packages"
+	],
+	"files.exclude": {
+        "inv-env": true
+    }
+}
