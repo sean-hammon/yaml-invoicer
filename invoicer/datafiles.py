@@ -9,8 +9,8 @@ from collections import namedtuple
 import arrow
 import ruamel.yaml
 
-Location = namedtuple('Location', ['invoices', 'recurring', 'pending'])
-LOCATION = Location('invoices', 'recurring', 'pending')
+Location = namedtuple('Location', ['invoices', 'recurring', 'pending', 'clients'])
+LOCATION = Location('invoices', 'recurring', 'pending', 'clients')
 
 CURRENT_DIR = os.path.abspath(".")
 
@@ -37,7 +37,7 @@ def read(recurring=False):
     invoices = []
     for file in invoice_files:
         with open(file) as inv_file:
-            inv = ruamel.yaml.load(inv_file.read())
+            inv = import_yaml(inv_file)
             invoices.append(inv)
 
     return invoices
@@ -61,3 +61,21 @@ def read_recurring():
         invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.recurring, file))
 
     return invoice_files
+
+
+def import_yaml(file_handle):
+    """
+    Read in the YAML files and read data from file referenced by invoices
+
+    :param file_handle: a file handle returned from open()
+    :return a dictionary with invoice data
+    """
+
+    inv = ruamel.yaml.load(file_handle.read())
+
+    client_yaml = os.path.join(CURRENT_DIR, LOCATION.clients, inv['client'] + ".yaml")
+    with open(client_yaml) as client:
+        inv['client'] = ruamel.yaml.load(client.read())
+
+    return inv
+    
