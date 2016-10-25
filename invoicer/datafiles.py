@@ -36,7 +36,7 @@ def read(recurring=False):
 
     invoices = []
     for file in invoice_files:
-        with open(file) as inv_file:
+        with open(file, 'r') as inv_file:
             inv = import_yaml(inv_file)
             invoices.append(inv)
 
