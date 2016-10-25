@@ -30,18 +30,37 @@ def generate_pdf(invoice):
     pdfmetrics.registerFont(TTFont("Slabo27", ttf_file))
 
     pdf = canvas.Canvas(filename, pagesize=letter)
-    pdf.setFont('Slabo27', 13)
 
+    add_invoice_num(pdf, invoice["number"])
     add_my_info(pdf)
 
     pdf.showPage()
     pdf.save()
 
 
+def add_invoice_num(pdf, invoice_number):
+    """
+    Add the invoice number to the PDF file.
+
+    :param invoice_number: the number of the invoice.
+    :param pdf: the canvas object
+    :return:
+    """
+
+    pdf.setFont('Slabo27', 18)
+
+    x = MARGIN
+    y = PAGE_HEIGHT - MARGIN
+
+    pdf.drawString(x, y, "Invoice: " + str(invoice_number))
+
+
 def add_my_info(pdf):
     """
     Add address of the business creating the invoice to the PDF file.
     """
+
+    pdf.setFont('Slabo27', 13)
 
     #   Set the cursor to the top, middle of the page
     x = (PAGE_WIDTH / 2) + (PAGE_WIDTH / 4)
