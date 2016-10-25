@@ -7,6 +7,8 @@ import re
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 INCH = 72
 MARGIN = INCH / 4
@@ -24,8 +26,11 @@ def generate_pdf(invoice):
                 ".pdf")
     filename = os.path.join(".", "pending", filename)
 
+    ttf_file = os.path.join(".", "Slabo27px-Regular.ttf")
+    pdfmetrics.registerFont(TTFont("Slabo27", ttf_file))
+
     pdf = canvas.Canvas(filename, pagesize=letter)
-    pdf.setFont('Helvetica', 16)
+    pdf.setFont('Slabo27', 13)
 
     add_my_info(pdf)
 
@@ -39,7 +44,7 @@ def add_my_info(pdf):
     """
 
     #   Set the cursor to the top, middle of the page
-    x = PAGE_WIDTH / 2
+    x = (PAGE_WIDTH / 2) + (PAGE_WIDTH / 4)
     y = PAGE_HEIGHT - MARGIN
     txt_object = pdf.beginText(x, y)
     txt_object.textLines("""
