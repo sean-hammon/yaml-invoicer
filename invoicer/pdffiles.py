@@ -31,8 +31,8 @@ def generate_pdf(invoice):
 
     pdf = canvas.Canvas(filename, pagesize=letter)
 
-    add_invoice_num(pdf, invoice["number"])
     add_my_info(pdf)
+    add_invoice_num(pdf, invoice["number"])
 
     pdf.showPage()
     pdf.save()
@@ -42,8 +42,8 @@ def add_invoice_num(pdf, invoice_number):
     """
     Add the invoice number to the PDF file.
 
-    :param invoice_number: the number of the invoice.
     :param pdf: the canvas object
+    :param invoice_number: the number of the invoice.
     :return:
     """
 
