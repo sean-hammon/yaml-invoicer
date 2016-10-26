@@ -60,16 +60,19 @@ def add_my_info(pdf):
     Add address of the business creating the invoice to the PDF file.
     """
 
-    pdf.setFont('Slabo27', 13)
-
     #   Set the cursor to the top, middle of the page
     x = (PAGE_WIDTH / 2) + (PAGE_WIDTH / 4)
     y = PAGE_HEIGHT - MARGIN
     txt_object = pdf.beginText(x, y)
-    txt_object.textLines("""
-    Sean Hammon
-    1121 Quarry View Way
-    Sandy, UT 84094
-    801-367-0038
-    """)
+    txt_object.setFont('Slabo27', 11)
+
+    txt_object.setLeading(16)
+    txt_object.textLine("Remit to:")
+    txt_object.setFont('Slabo27', 13)
+    txt_object.setLeading(12)
+    txt_object.textLine('Sean Hammon')
+    txt_object.textLine('1121 Quarry View Way')
+    txt_object.textLine('Sandy, UT 84094')
+    txt_object.textLine('801-367-0038')
+
     pdf.drawText(txt_object)
