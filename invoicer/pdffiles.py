@@ -33,6 +33,7 @@ def generate_pdf(invoice):
 
     add_my_info(pdf)
     add_invoice_num(pdf, invoice["number"])
+    add_client_info(pdf, invoice["client"])
 
     pdf.showPage()
     pdf.save()
@@ -76,3 +77,30 @@ def add_my_info(pdf):
     txt_object.textLine('801-367-0038')
 
     pdf.drawText(txt_object)
+
+
+def add_client_info(pdf, client):
+    """
+    Add client information to the PDF
+
+    :param pdf: the canvas object
+    :param client:
+    :return:
+    """
+    x = MARGIN
+    y = PAGE_HEIGHT - MARGIN - 24
+
+    txt_object = pdf.beginText(x, y)
+    txt_object.setFont('Slabo27', 14)
+    txt_object.setLeading(14)
+
+    contact = client['principle']['name']
+    if 'billing_contact' in client:
+        contact = client['billing_contact']['name']
+    txt_object.textLine(contact)
+
+    txt_object.textLine(client['company']['name'])
+    txt_object.textLines(client['company']['address'])
+
+    pdf.drawText(txt_object)
+
