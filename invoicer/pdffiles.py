@@ -7,12 +7,15 @@ import re
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import Table, TableStyle
 
 INCH = 72
 MARGIN = INCH / 4
 PAGE_WIDTH, PAGE_HEIGHT = letter
+
 
 def generate_pdf(invoice):
     """
@@ -34,6 +37,7 @@ def generate_pdf(invoice):
     add_my_info(pdf)
     add_invoice_num(pdf, invoice["number"])
     add_client_info(pdf, invoice["client"])
+    add_invoice_lines(pdf, invoice["lines"])
 
     pdf.showPage()
     pdf.save()
@@ -104,3 +108,40 @@ def add_client_info(pdf, client):
 
     pdf.drawText(txt_object)
 
+
+def add_invoice_lines(pdf, lines):
+    """
+    Add the invoice line items to the PDF file
+
+    :param pdf: The canvas object
+    :param lines: A list of line items
+    :return:
+    """
+    x = MARGIN
+    y = INCH * 7.5
+
+    COLUMN_WIDTHS = [INCH * .5, INCH * 5.7, INCH * .90, INCH * .90]
+    table_data = [["Qty", "Description", "Price Each", "Total Price"]]
+    subtotal = 0
+    for row in lines:
+        price = float(row["quantity"]) * float(row["price_each"])
+        data_row = [
+            row["quantity"],
+            row["description"],
+            '${0:.2f}'.format(row["price_each"]),
+            '${0:.2f}'.format(price)
+        ]
+        subtotal += price
+        table_data.append(data_row)
+
+    table = Table(table_data, COLUMN_WIDTHS)
+    table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (0, -1), 'CENTER'),
+        ('ALIGN', (2, 0), (3, -1), 'RIGHT'),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(0x555555)),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor(0xFFFFFF)),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
+    ]))
+    table.wrapOn(pdf, 0, 0)
+    table.drawOn(pdf, x, y)
