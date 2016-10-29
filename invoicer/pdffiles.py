@@ -37,7 +37,7 @@ def generate_pdf(invoice):
     add_my_info(pdf)
     add_invoice_num(pdf, invoice["number"])
     add_client_info(pdf, invoice["client"])
-    add_invoice_lines(pdf, invoice["lines"], invoice["tax_rate"])
+    add_invoice_lines(pdf, invoice)
 
     pdf.showPage()
     pdf.save()
@@ -109,13 +109,12 @@ def add_client_info(pdf, client):
     pdf.drawText(txt_object)
 
 
-def add_invoice_lines(pdf, lines, tax_rate=0):
+def add_invoice_lines(pdf, invoice):
     """
     Add the invoice line items to the PDF file
 
     :param pdf: The canvas object
-    :param lines: A list of line items
-    :param tax_rate: Optional tax percentage
+    :param invoice: The invoice dictionary
     :return:
     """
     x = MARGIN
@@ -124,7 +123,7 @@ def add_invoice_lines(pdf, lines, tax_rate=0):
     column_widths = [INCH * .5, INCH * 5.7, INCH * .90, INCH * .90]
     table_data = [["Qty", "Description", "Price Each", "Total Price"]]
     subtotal = 0
-    for row in lines:
+    for row in invoice["lines"]:
         price = float(row["quantity"]) * float(row["price_each"])
         data_row = [
             row["quantity"],
@@ -136,15 +135,16 @@ def add_invoice_lines(pdf, lines, tax_rate=0):
         table_data.append(data_row)
 
     total_lines = 28
-    incoming_lines = len(lines)
+    incoming_lines = len(invoice["lines"])
     blank_lines = total_lines - incoming_lines
     for i in range(0, blank_lines):
         table_data.append(['', '', '', ''])
 
     table_data.append(['', '', 'Subtotal:', '${0:.2f}'.format(subtotal)])
-    tax = tax_rate * subtotal
+    tax = invoice["tax_rate"] * subtotal
     table_data.append(['', '', 'Tax:', '${0:.2f}'.format(tax)])
     total = subtotal + tax
+    invoice["total"] = total
     table_data.append(['', '', 'Total:', '${0:.2f}'.format(total)])
 
     table = Table(table_data, column_widths)
