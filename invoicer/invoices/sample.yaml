@@ -1,5 +1,6 @@
 client: sample
 tax_rate: 0.0724
+title: Christmas Gifts
 lines:
   - quantity: 1
     description: Partridge in a Pear Tree
