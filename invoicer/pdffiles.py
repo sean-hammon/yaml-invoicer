@@ -38,6 +38,7 @@ def generate_pdf(invoice):
     add_invoice_num(pdf, invoice["number"])
     add_client_info(pdf, invoice["client"])
     add_invoice_lines(pdf, invoice)
+    add_paypal_link(pdf, invoice)
 
     pdf.showPage()
     pdf.save()
@@ -158,3 +159,27 @@ def add_invoice_lines(pdf, invoice):
     ]))
     table.wrapOn(pdf, x, y)
     table.drawOn(pdf, x, y)
+
+
+def add_paypal_link(pdf, invoice):
+
+    line_height = 11
+    x = (PAGE_WIDTH / 2) + (PAGE_WIDTH / 4)
+    y = PAGE_HEIGHT - (line_height * 9)
+
+    txt_object = pdf.beginText(x, y)
+    txt_object.setFont('Slabo27', 11)
+    txt_object.setFillColorRGB(0, 0, 220)
+
+    txt_object.textLine("Pay with PayPal")
+    pdf.drawText(txt_object)
+
+    href = ("https://www.paypal.com/cgi-bin/webscr" +
+            "?business=sean@dezynworks.com" +
+            "&cmd=_xclick&currency_code=USD" +
+            "&amount=" + str(invoice["total"]) +
+            "&item_name=" + invoice["title"])
+
+    box_width = pdf.stringWidth("Pay with PayPal")
+    link_rect = (x, y, x + box_width, y + line_height)
+    pdf.linkURL(href, link_rect)
