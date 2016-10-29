@@ -37,7 +37,7 @@ def generate_pdf(invoice):
     add_my_info(pdf)
     add_invoice_num(pdf, invoice["number"])
     add_client_info(pdf, invoice["client"])
-    add_invoice_lines(pdf, invoice["lines"])
+    add_invoice_lines(pdf, invoice["lines"], invoice["tax_rate"])
 
     pdf.showPage()
     pdf.save()
@@ -109,18 +109,19 @@ def add_client_info(pdf, client):
     pdf.drawText(txt_object)
 
 
-def add_invoice_lines(pdf, lines):
+def add_invoice_lines(pdf, lines, tax_rate=0):
     """
     Add the invoice line items to the PDF file
 
     :param pdf: The canvas object
     :param lines: A list of line items
+    :param tax_rate: Optional tax percentage
     :return:
     """
     x = MARGIN
-    y = INCH * 7.5
+    y = MARGIN * 3
 
-    COLUMN_WIDTHS = [INCH * .5, INCH * 5.7, INCH * .90, INCH * .90]
+    column_widths = [INCH * .5, INCH * 5.7, INCH * .90, INCH * .90]
     table_data = [["Qty", "Description", "Price Each", "Total Price"]]
     subtotal = 0
     for row in lines:
@@ -134,14 +135,26 @@ def add_invoice_lines(pdf, lines):
         subtotal += price
         table_data.append(data_row)
 
-    table = Table(table_data, COLUMN_WIDTHS)
+    total_lines = 28
+    incoming_lines = len(lines)
+    blank_lines = total_lines - incoming_lines
+    for i in range(0, blank_lines):
+        table_data.append(['', '', '', ''])
+
+    table_data.append(['', '', 'Subtotal:', '${0:.2f}'.format(subtotal)])
+    tax = tax_rate * subtotal
+    table_data.append(['', '', 'Tax:', '${0:.2f}'.format(tax)])
+    total = subtotal + tax
+    table_data.append(['', '', 'Total:', '${0:.2f}'.format(total)])
+
+    table = Table(table_data, column_widths)
     table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (0, -1), 'CENTER'),
         ('ALIGN', (2, 0), (3, -1), 'RIGHT'),
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(0x555555)),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor(0xFFFFFF)),
-        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
+        ('GRID', (0, 0), (-1, -4), 0.25, colors.HexColor(0x333333)),
+        ('GRID', (-2, -3), (-1, -1), 0.25, colors.HexColor(0x333333))
     ]))
-    table.wrapOn(pdf, 0, 0)
+    table.wrapOn(pdf, x, y)
     table.drawOn(pdf, x, y)
