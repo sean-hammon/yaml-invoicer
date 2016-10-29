@@ -14,7 +14,3 @@ Desktop.ini
 #   Python System Folders
 inv-env
 __pycache__
-
-#   Generated files
-pending
-processed
