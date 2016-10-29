@@ -1,5 +1,5 @@
 client: sample
-tax: 0.724
+tax_rate: 0.0724
 lines:
   - quantity: 2
     description: Turtle Doves
