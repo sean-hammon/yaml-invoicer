@@ -36,11 +36,19 @@ def read(recurring=False):
     if recurring:
         invoice_files.extend(read_recurring())
 
+    now = arrow.now('local')
     invoices = []
     for file in invoice_files:
         with open(file, 'r') as inv_file:
             inv = import_yaml(inv_file)
             invoices.append(inv)
+
+        #   Move file into processed folder
+        new_file = "{0}.{1:02d}.{2:02d}-{3}".format(now.year, now.month, now.day, os.path.basename(file))
+        os.rename(
+            file,
+            os.path.join(CURRENT_DIR, LOCATION.invoices, "processed", new_file)
+        )
 
     return invoices
 
