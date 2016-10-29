@@ -4,6 +4,7 @@ Reads YAML files from disk and turns them into YAML objects
 
 import fnmatch
 import os
+import re
 from collections import namedtuple
 
 import arrow
@@ -29,7 +30,8 @@ def read(recurring=False):
     file_list = os.listdir(os.path.join(CURRENT_DIR, LOCATION.invoices))
     file_names = fnmatch.filter(file_list, "*.yaml")
     for file in file_names:
-        invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.invoices, file))
+        if not re.match('sample', file):
+            invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.invoices, file))
 
     if recurring:
         invoice_files.extend(read_recurring())
@@ -58,7 +60,8 @@ def read_recurring():
 
     invoice_files = []
     for file in file_names:
-        invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.recurring, file))
+        if not re.match('.*sample', file):
+            invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.recurring, file))
 
     return invoice_files
 
