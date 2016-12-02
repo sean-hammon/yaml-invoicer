@@ -5,6 +5,8 @@ Generate PDF file based on YAML Objects
 import os
 import re
 
+import arrow
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -13,7 +15,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Table, TableStyle
 
 INCH = 72
-MARGIN = INCH / 4
+MARGIN = INCH / 2
 PAGE_WIDTH, PAGE_HEIGHT = letter
 
 
@@ -60,6 +62,10 @@ def add_invoice_num(pdf, invoice_number):
 
     pdf.drawString(x, y, "Invoice: " + str(invoice_number))
 
+    y = y - 11
+    pdf.setFont('Slabo27', 11)
+    pdf.drawString(x, y, arrow.now().format("MMMM D, YYYY"))
+        
 
 def add_my_info(pdf):
     """
@@ -93,7 +99,7 @@ def add_client_info(pdf, client):
     :return:
     """
     x = MARGIN
-    y = PAGE_HEIGHT - MARGIN - 24
+    y = PAGE_HEIGHT - MARGIN - 36
 
     txt_object = pdf.beginText(x, y)
     txt_object.setFont('Slabo27', 14)
@@ -119,9 +125,9 @@ def add_invoice_lines(pdf, invoice):
     :return:
     """
     x = MARGIN
-    y = MARGIN * 3
+    y = MARGIN * 3.5
 
-    column_widths = [INCH * .5, INCH * 5.7, INCH * .90, INCH * .90]
+    column_widths = [INCH * .5, INCH * 5.2, INCH * .90, INCH * .90]
     table_data = [["Qty", "Description", "Price Each", "Total Price"]]
     subtotal = 0
     for row in invoice["lines"]:
@@ -135,7 +141,7 @@ def add_invoice_lines(pdf, invoice):
         subtotal += price
         table_data.append(data_row)
 
-    total_lines = 28
+    total_lines = 25
     incoming_lines = len(invoice["lines"])
     blank_lines = total_lines - incoming_lines
     for i in range(0, blank_lines):
