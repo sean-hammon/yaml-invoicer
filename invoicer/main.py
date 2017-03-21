@@ -4,23 +4,25 @@ Main program file
 
 import io
 import sys
+
 import datafiles
 import pdffiles
 
+
 def main(include_recurring):
-	next_invoice_num = 0
-	with io.open("./invoice_num.txt", 'r') as fh:
-		next_invoice_num = int(fh.read())
+    with io.open("./invoice_num.txt", 'r') as fh:
+        next_invoice_num = int(fh.read())
 
-	invoices = datafiles.read(include_recurring)
-	for invoice in invoices:
-		invoice["number"] = next_invoice_num
-		pdffiles.generate_pdf(invoice)
-		next_invoice_num += 1
+    invoices = datafiles.read(include_recurring)
+    for invoice in invoices:
+        invoice["number"] = next_invoice_num
+        pdffiles.generate_pdf(invoice)
+        next_invoice_num += 1
 
-	with io.open("./invoice_num.txt","w") as fh:
-		fh.write(str(next_invoice_num))
+    with io.open("./invoice_num.txt", "w") as fh:
+        fh.write(str(next_invoice_num))
+
 
 if __name__ == "__main__":
-	include_recurring = '--recurring' in sys.argv
-	main(include_recurring)
+    include_recurring = '--recurring' in sys.argv
+    main(include_recurring)
