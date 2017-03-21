@@ -45,6 +45,8 @@ def generate_pdf(invoice):
     pdf.showPage()
     pdf.save()
 
+    return filename
+
 
 def add_invoice_num(pdf, invoice_number):
     """
