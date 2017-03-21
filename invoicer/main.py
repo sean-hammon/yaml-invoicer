@@ -7,6 +7,7 @@ import sys
 
 import datafiles
 import pdffiles
+import mailer
 
 
 def main(include_recurring):
@@ -17,7 +18,8 @@ def main(include_recurring):
     for invoice in invoices:
         print("Processing invoice {} for {}".format(config['next_invoice'], invoice['client']['company']['name']))
         invoice["number"] = next_invoice_num
-        pdffiles.generate_pdf(invoice)
+        pdf_path = pdffiles.generate_pdf(invoice)
+        mailer.send(invoice, pdf_path)
         next_invoice_num += 1
 
     with io.open("./invoice_num.txt", "w") as fh:
