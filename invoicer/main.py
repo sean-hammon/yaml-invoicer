@@ -5,14 +5,16 @@ Main program file
 import io
 import sys
 
+import ruamel.yaml
+
 import datafiles
 import pdffiles
 import mailer
 
 
 def main(include_recurring):
-    with io.open("./invoice_num.txt", 'r') as fh:
-        next_invoice_num = int(fh.read())
+    with io.open("./config.yaml", 'r') as fh:
+        config = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
 
     invoices = datafiles.read(include_recurring)
     for invoice in invoices:
