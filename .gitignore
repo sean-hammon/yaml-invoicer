@@ -14,3 +14,6 @@ Desktop.ini
 #   Python System Folders
 invoicer-env
 __pycache__
+
+#   Environment specific files
+/invoicer/config.yaml

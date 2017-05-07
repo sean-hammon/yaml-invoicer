@@ -1,0 +1,6 @@
+last_invoice: 1000
+smtp:
+  host: mail.foo.com
+  port: 25
+  user: foo
+  password: bar
