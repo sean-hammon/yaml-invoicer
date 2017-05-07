@@ -1,4 +1,4 @@
-last_invoice: 1000
+next_invoice: 1000
 smtp:
   host: mail.foo.com
   port: 25
