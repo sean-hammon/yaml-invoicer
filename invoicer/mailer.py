@@ -16,10 +16,22 @@ def send(smtp_config, invoice, pdf_path):
     msg['Subject'] = ''
 
     # The main body is just another attachment
-    body = MIMEText("""
-    Here is your invoice.
-    """)
-    msg.attach(body)
+    body = """
+    Hi, {}.
+    
+    Here is your invoice for {}. The total amount is {}.
+    
+    If you have any questions, let me know.
+    
+    -Sean
+    """.format(
+        client_name,
+        invoice['title'],
+        invoice['total']
+    )
+
+    mime_body = MIMEText(body)
+    msg.attach(mime_body)
 
     # PDF attachment
     pdf_file = open(pdf_path,'rb')
