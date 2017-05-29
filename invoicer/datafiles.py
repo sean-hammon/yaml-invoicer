@@ -82,11 +82,11 @@ def import_yaml(file_handle):
     :return a dictionary with invoice data
     """
 
-    inv = ruamel.yaml.load(file_handle.read())
+    inv = ruamel.yaml.safe_load(file_handle.read())
 
     client_yaml = os.path.join(CURRENT_DIR, LOCATION.clients, inv['client'] + ".yaml")
     with open(client_yaml) as client:
-        inv['client'] = ruamel.yaml.load(client.read())
+        inv['client'] = ruamel.yaml.safe_load(client.read())
 
     return inv
     
