@@ -148,7 +148,7 @@ def add_invoice_lines(pdf, invoice):
         table_data.append(['', '', '', ''])
 
     table_data.append(['', '', 'Subtotal:', '${0:.2f}'.format(subtotal)])
-    tax = invoice["tax_rate"] * subtotal
+    tax = invoice["client"]["tax_rate"] * subtotal
     table_data.append(['', '', 'Tax:', '${0:.2f}'.format(tax)])
     total = subtotal + tax
     invoice["total"] = total
