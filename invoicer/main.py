@@ -15,6 +15,7 @@ def main(include_recurring):
 
     invoices = datafiles.read(include_recurring)
     for invoice in invoices:
+        print("Processing invoice {} for {}".format(config['next_invoice'], invoice['client']['company']['name']))
         invoice["number"] = next_invoice_num
         pdffiles.generate_pdf(invoice)
         next_invoice_num += 1
