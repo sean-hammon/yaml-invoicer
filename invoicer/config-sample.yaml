@@ -1,5 +1,6 @@
 next_invoice: 1000
 smtp:
+  from: bar@foo.com
   host: mail.foo.com
   port: 25
   user: foo
