@@ -21,7 +21,7 @@ def main(include_recurring):
         print("Processing invoice {} for {}".format(config['next_invoice'], invoice['client']['company']['name']))
         invoice["number"] = config['next_invoice']
         pdf_path = pdffiles.generate_pdf(invoice)
-        mailer.send(invoice, pdf_path)
+        mailer.send(config["smtp"], invoice, pdf_path)
         config['next_invoice'] += 1
 
     yaml_out = ruamel.yaml.dump(config, Dumper=ruamel.yaml.RoundTripDumper)

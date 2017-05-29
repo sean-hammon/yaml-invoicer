@@ -7,7 +7,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText;
 from email.mime.application import MIMEApplication
 
-def send(invoice, pdf_path):
+
+def send(smtp_config, invoice, pdf_path):
 
     msg = MIMEMultipart()
     msg['From'] = ''
@@ -27,8 +28,8 @@ def send(invoice, pdf_path):
     attachment.add_header('Content-Disposition','attachment',filename=filename)
     msg.attach(attachment)
 
-    with SMTP("") as smtp:
+    with SMTP(smtp_config['host'], smtp_config['port']) as smtp:
         smtp.starttls()
-        smtp.login('','')
-        smtp.sendmail('',[''], msg.as_string())
+        smtp.login(smtp_config['user'],smtp_config['password'])
+        smtp.sendmail(msg['From'], [''], msg.as_string())
         smtp.quit()
