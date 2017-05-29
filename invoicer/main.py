@@ -24,8 +24,9 @@ def main(include_recurring):
         mailer.send(invoice, pdf_path)
         config['next_invoice'] += 1
 
-    with io.open("./invoice_num.txt", "w") as fh:
-        fh.write(str(next_invoice_num))
+    yaml_out = ruamel.yaml.dump(config, Dumper=ruamel.yaml.RoundTripDumper)
+    with io.open("./config.yaml", "w") as fh:
+        fh.write(yaml_out)
 
 
 if __name__ == "__main__":
