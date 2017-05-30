@@ -10,10 +10,17 @@ from email.mime.application import MIMEApplication
 
 def send(smtp_config, invoice, pdf_path):
 
+    recipients = {
+        "to": [invoice['client']['principle']['email']],
+        "cc": [smtp_config['from']]
+    }
+    if 'billing_contact' in invoice['client']:
+        recipients['to'] = invoice['client']['billing_contact']['email']
+
     msg = MIMEMultipart()
-    msg['From'] = ''
-    msg['To'] = ''
-    msg['Subject'] = ''
+    msg['from'] = smtp_config['from']
+    msg['cc'] = ", ".join(recipients['cc'])
+    msg['To'] = ", ".join(recipients['to'])
 
     # The main body is just another attachment
     body = """
@@ -40,8 +47,9 @@ def send(smtp_config, invoice, pdf_path):
     attachment.add_header('Content-Disposition','attachment',filename=filename)
     msg.attach(attachment)
 
+    send_to = ', '.join(recipients['to'] + recipients['cc'])
     with SMTP_SSL(smtp_config['host'], smtp_config['port']) as smtp:
         smtp.ehlo()
         smtp.login(smtp_config['user'],smtp_config['password'])
-        smtp.sendmail(msg['From'], [''], msg.as_string())
+        smtp.sendmail(smtp_config['from'], send_to, msg.as_string())
         smtp.quit()
