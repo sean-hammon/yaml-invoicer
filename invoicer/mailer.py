@@ -21,6 +21,15 @@ def send(smtp_config, invoice, pdf_path):
     msg['from'] = smtp_config['from']
     msg['cc'] = ", ".join(recipients['cc'])
     msg['To'] = ", ".join(recipients['to'])
+    msg['Subject'] = 'Invoice for {} {}'.format(
+        invoice["client"]["company"]["name"],
+        invoice["title"]
+    )
+
+    client_name = invoice['client']['principle']['name'].split(' ').pop(0)
+    if 'billing_contact' in invoice['client']:
+        client_name = invoice['client']['billing_contact']['name'].split(' ').pop(0)
+
 
     # The main body is just another attachment
     body = """
