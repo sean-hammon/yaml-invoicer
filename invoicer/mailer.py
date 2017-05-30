@@ -2,6 +2,7 @@
 Send the PDF file to the client
 """
 
+from os.path import basename
 from smtplib import SMTP_SSL
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText;
@@ -50,10 +51,11 @@ def send(smtp_config, invoice, pdf_path):
     msg.attach(mime_body)
 
     # PDF attachment
-    pdf_file = open(pdf_path,'rb')
-    attachment = MIMEApplication(pdf_file.read(),_subtype="pdf")
+    pdf_file = open(pdf_path, 'rb')
+    attachment = MIMEApplication(pdf_file.read(), _subtype="pdf")
     pdf_file.close()
-    attachment.add_header('Content-Disposition','attachment',filename=filename)
+    filename = basename(pdf_path)
+    attachment.add_header('Content-Disposition', 'attachment', filename=filename)
     msg.attach(attachment)
 
     send_to = ', '.join(recipients['to'] + recipients['cc'])
