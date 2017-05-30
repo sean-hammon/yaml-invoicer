@@ -19,7 +19,7 @@ def send(smtp_config, invoice, pdf_path):
     body = """
     Hi, {}.
     
-    Here is your invoice for {}. The total amount is {}.
+    Here is your invoice for {}. The total amount is ${:.2f}.
     
     If you have any questions, let me know.
     
