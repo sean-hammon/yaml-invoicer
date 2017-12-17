@@ -16,7 +16,7 @@ def send(smtp_config, invoice, pdf_path):
         "cc": [smtp_config['from']]
     }
     if 'billing_contact' in invoice['client']:
-        recipients['to'] = invoice['client']['billing_contact']['email']
+        recipients['to'] = [invoice['client']['billing_contact']['email']]
 
     msg = MIMEMultipart()
     msg['from'] = smtp_config['from']
