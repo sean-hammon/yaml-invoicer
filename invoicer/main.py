@@ -10,11 +10,15 @@ import ruamel.yaml
 import datafiles
 import pdffiles
 import mailer
+import arrow
 
 
-def main(include_recurring):
+def main():
     with io.open("./config.yaml", 'r') as fh:
         config = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
+
+    today = arrow.now('US/Mountain').day
+    include_recurring = today == 1
 
     invoices = datafiles.read(include_recurring)
     for invoice in invoices:
@@ -30,5 +34,4 @@ def main(include_recurring):
 
 
 if __name__ == "__main__":
-    include_recurring = '--recurring' in sys.argv
-    main(include_recurring)
+    main()
