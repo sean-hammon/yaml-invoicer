@@ -23,12 +23,17 @@ def send(smtp_config, invoice, pdf_path):
             smtp_config['from']['email']
         )]
     }
+    send_to = [
+        invoice['client']['principle']['email'],
+        smtp_config['from']['email']
+    ]
 
     if 'billing_contact' in invoice['client']:
         recipients['to'].append("{} <{}>".format(
             invoice['client']['billing_contact']['name'],
             invoice['client']['billing_contact']['email']
         ))
+        send_to.append(invoice['client']['billing_contact']['email'])
 
     msg = MIMEMultipart()
     msg['From'] = '{} <{}>'.format(
@@ -74,11 +79,8 @@ def send(smtp_config, invoice, pdf_path):
     msg.attach(attachment)
 
     if not cli.args.nomail:
-        print(msg.as_string())
-        return
-        send_to = ', '.join(recipients['to'] + recipients['cc'])
         with SMTP_SSL(smtp_config['host'], smtp_config['port']) as smtp:
             smtp.ehlo()
             smtp.login(smtp_config['user'],smtp_config['password'])
-            smtp.sendmail(smtp_config['from'], send_to, msg.as_string())
+            smtp.sendmail(smtp_config['from']['email'], send_to, msg.as_string())
             smtp.quit()
