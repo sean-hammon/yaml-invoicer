@@ -8,6 +8,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText;
 from email.mime.application import MIMEApplication
 
+import cli
+
 
 def send(smtp_config, invoice, pdf_path):
 
@@ -19,10 +21,10 @@ def send(smtp_config, invoice, pdf_path):
         recipients['to'] = [invoice['client']['billing_contact']['email']]
 
     msg = MIMEMultipart()
-    msg['from'] = smtp_config['from']
-    msg['cc'] = ", ".join(recipients['cc'])
+    msg['From'] = smtp_config['from']
+    msg['Cc'] = ", ".join(recipients['cc'])
     msg['To'] = ", ".join(recipients['to'])
-    msg['Subject'] = 'Invoice for {} {}'.format(
+    msg['Subject'] = 'Invoice for {} -- {}'.format(
         invoice["client"]["company"]["name"],
         invoice["title"]
     )
@@ -58,9 +60,12 @@ def send(smtp_config, invoice, pdf_path):
     attachment.add_header('Content-Disposition', 'attachment', filename=filename)
     msg.attach(attachment)
 
-    send_to = ', '.join(recipients['to'] + recipients['cc'])
-    with SMTP_SSL(smtp_config['host'], smtp_config['port']) as smtp:
-        smtp.ehlo()
-        smtp.login(smtp_config['user'],smtp_config['password'])
-        smtp.sendmail(smtp_config['from'], send_to, msg.as_string())
-        smtp.quit()
+    if not cli.args.nomail:
+        print(msg.as_string())
+        return
+        send_to = ', '.join(recipients['to'] + recipients['cc'])
+        with SMTP_SSL(smtp_config['host'], smtp_config['port']) as smtp:
+            smtp.ehlo()
+            smtp.login(smtp_config['user'],smtp_config['password'])
+            smtp.sendmail(smtp_config['from'], send_to, msg.as_string())
+            smtp.quit()
