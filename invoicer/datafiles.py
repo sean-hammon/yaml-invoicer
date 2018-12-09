@@ -45,11 +45,12 @@ def read(recurring=False):
             invoices.append(inv)
 
         #   Move file into processed folder
-        new_file = "{0}.{1:02d}.{2:02d}-{3}".format(now.year, now.month, now.day, os.path.basename(file))
-        os.rename(
-            file,
-            os.path.join(CURRENT_DIR, LOCATION.invoices, "processed", new_file)
-        )
+        if not re.match('test', file):
+            new_file = "{0}.{1:02d}.{2:02d}-{3}".format(now.year, now.month, now.day, os.path.basename(file))
+            os.rename(
+                file,
+                os.path.join(CURRENT_DIR, LOCATION.invoices, "processed", new_file)
+            )
 
     return invoices
 
