@@ -3,10 +3,10 @@ Main program file
 """
 
 import io
-import sys
 
 import ruamel.yaml
 
+import cli
 import datafiles
 import pdffiles
 import mailer
@@ -15,7 +15,14 @@ import arrow
 
 def main():
     with io.open("./config.yaml", 'r') as fh:
-        config = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
+        prodConfig = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
+    with io.open("./config-test.yaml", 'r') as fh:
+        testConfig = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
+
+    if cli.args.testmode:
+        config = testConfig
+    else:
+        config = prodConfig
 
     today = arrow.now('US/Mountain').day
     include_recurring = today == 1

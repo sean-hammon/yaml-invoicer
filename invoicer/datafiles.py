@@ -30,7 +30,7 @@ def read(recurring=False):
     file_list = os.listdir(os.path.join(CURRENT_DIR, LOCATION.invoices))
     file_names = fnmatch.filter(file_list, "*.yaml")
     for file in file_names:
-        if not re.match('sample', file):
+        if not re.match(r'.*sample.yaml', file):
             invoice_files.append(os.path.join(CURRENT_DIR, LOCATION.invoices, file))
 
     if recurring:
@@ -45,7 +45,7 @@ def read(recurring=False):
             invoices.append(inv)
 
         #   Move file into processed folder
-        if not re.match('test', file):
+        if not re.match(r'.*test.yaml', file):
             new_file = "{0}.{1:02d}.{2:02d}-{3}".format(now.year, now.month, now.day, os.path.basename(file))
             os.rename(
                 file,
