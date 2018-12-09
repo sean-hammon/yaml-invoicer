@@ -12,9 +12,10 @@ Desktop.ini
 ._*
 
 #   Python System Folders
-env
+inv-env
 __pycache__
 
 #   Environment specific files
 /invoicer/config.yaml
+/invoicer/config-test.yaml
 cron.*
