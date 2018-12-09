@@ -14,15 +14,13 @@ import arrow
 
 
 def main():
-    with io.open("./config.yaml", 'r') as fh:
-        prodConfig = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
-    with io.open("./config-test.yaml", 'r') as fh:
-        testConfig = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
 
+    config_file = "./config.yaml"
     if cli.args.testmode:
-        config = testConfig
-    else:
-        config = prodConfig
+        config_file = "./config-test.yaml"
+
+    with io.open(config_file, 'r') as fh:
+        config = ruamel.yaml.load(fh.read(), Loader=ruamel.yaml.Loader)
 
     today = arrow.now('US/Mountain').day
     include_recurring = today == 1
@@ -37,7 +35,7 @@ def main():
         config['next_invoice'] += 1
 
     yaml_out = ruamel.yaml.dump(config, Dumper=ruamel.yaml.RoundTripDumper)
-    with io.open("./config.yaml", "w") as fh:
+    with io.open(config_file, "w") as fh:
         fh.write(yaml_out)
 
 
