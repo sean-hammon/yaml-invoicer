@@ -14,14 +14,27 @@ import cli
 def send(smtp_config, invoice, pdf_path):
 
     recipients = {
-        "to": [invoice['client']['principle']['email']],
-        "cc": [smtp_config['from']]
+        "to": ['{} <{}>'.format(
+            invoice['client']['principle']['name'],
+            invoice['client']['principle']['email']
+        )],
+        "cc": ['{} <{}>'.format(
+            smtp_config['from']['name'],
+            smtp_config['from']['email']
+        )]
     }
+
     if 'billing_contact' in invoice['client']:
-        recipients['to'] = [invoice['client']['billing_contact']['email']]
+        recipients['to'].append("{} <{}>".format(
+            invoice['client']['billing_contact']['name'],
+            invoice['client']['billing_contact']['email']
+        ))
 
     msg = MIMEMultipart()
-    msg['From'] = smtp_config['from']
+    msg['From'] = '{} <{}>'.format(
+        smtp_config['from']['name'],
+        smtp_config['from']['email']
+    )
     msg['Cc'] = ", ".join(recipients['cc'])
     msg['To'] = ", ".join(recipients['to'])
     msg['Subject'] = 'Invoice for {} -- {}'.format(
