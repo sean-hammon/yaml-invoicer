@@ -39,6 +39,7 @@ def read(recurring=False):
     now = arrow.now('local')
     invoices = []
     for file in invoice_files:
+        print('   reading {}', file)
         with open(file, 'r') as inv_file:
             inv = import_yaml(inv_file)
             invoices.append(inv)

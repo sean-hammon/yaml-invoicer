@@ -20,6 +20,7 @@ def main():
     today = arrow.now('US/Mountain').day
     include_recurring = today == 1
 
+    print("\ntoday: {}, include recurring: {}", today, include_recurring)
     invoices = datafiles.read(include_recurring)
     for invoice in invoices:
         print("Processing invoice {} for {}".format(config['next_invoice'], invoice['client']['company']['name']))
